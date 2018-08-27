@@ -1,4 +1,4 @@
-package lincom.coolweather;
+package com.lin.coolweather;
 
 import org.junit.Test;
 

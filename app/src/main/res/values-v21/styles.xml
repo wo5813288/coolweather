@@ -1,0 +1,7 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="MyAppTheme" parent="AppTheme">
+    </style>
+
+</resources>

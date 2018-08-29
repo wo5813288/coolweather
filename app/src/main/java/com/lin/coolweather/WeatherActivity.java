@@ -1,5 +1,6 @@
 package com.lin.coolweather;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
@@ -19,6 +20,7 @@ import com.bumptech.glide.Glide;
 import com.lin.coolweather.fragment.ChooseAreaFragment;
 import com.lin.coolweather.gson.Forecast;
 import com.lin.coolweather.gson.Weather;
+import com.lin.coolweather.service.AutoUpdateService;
 import com.lin.coolweather.util.HttpUtil;
 import com.lin.coolweather.util.PreferenceUtil;
 import com.lin.coolweather.util.ToastUtil;
@@ -197,6 +199,8 @@ public class WeatherActivity extends BaseActivity{
         tvCarWash.setText(carWash);
         tvSport.setText(sport);
         svWeatherLayout.setVisibility(View.VISIBLE);
+        Intent intent =new Intent(this, AutoUpdateService.class);
+        startService(intent);
     }
 
 }

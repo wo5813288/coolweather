@@ -17,11 +17,13 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.lin.coolweather.MainActivity;
 import com.lin.coolweather.R;
 import com.lin.coolweather.WeatherActivity;
 import com.lin.coolweather.db.City;
 import com.lin.coolweather.db.County;
 import com.lin.coolweather.db.Province;
+import com.lin.coolweather.gson.Weather;
 import com.lin.coolweather.util.HttpUtil;
 import com.lin.coolweather.util.ToastUtil;
 import com.lin.coolweather.util.Utility;
@@ -68,6 +70,7 @@ public class ChooseAreaFragment extends Fragment {
      */
     private int currentLevel;
 
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -95,10 +98,18 @@ public class ChooseAreaFragment extends Fragment {
                 }else if(currentLevel==LEVEL_COUNTY){
                     //选中最后一级县，跳转到天气详情页面，关闭当前页面
                     String weatherId = countyList.get(position).getWeatherId();
-                    Intent intent = new Intent(getActivity(), WeatherActivity.class);
-                    intent.putExtra("weather_id",weatherId);
-                    startActivity(intent);
-                    getActivity().finish();
+                    if(getActivity() instanceof MainActivity){
+                        Intent intent = new Intent(getActivity(), WeatherActivity.class);
+                        intent.putExtra("weather_id",weatherId);
+                        startActivity(intent);
+                        getActivity().finish();
+                    }else if(getActivity() instanceof WeatherActivity){
+                            WeatherActivity activity = (WeatherActivity) getActivity();
+                        activity.weatherDrawerLayout.closeDrawers();
+                        activity.srLayout.setRefreshing(true);
+                        activity. requestWeather(weatherId);
+                    }
+
                 }
             }
         });
@@ -242,4 +253,5 @@ public class ChooseAreaFragment extends Fragment {
             progressDialog.dismiss();
         }
     }
+
 }

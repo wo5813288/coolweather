@@ -1,7 +1,8 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="MyAppTheme" parent="AppTheme">
+    <style name="WeatherActivityTheme" parent="AppTheme">
+        //5.x以上开始需要把颜色设置为透明
+        <item name="android:statusBarColor">@android:color/transparent</item>
     </style>
-
 </resources>

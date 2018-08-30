@@ -9,6 +9,15 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        flavorDimensions "versionCode"
+    }
+    productFlavors{
+        qihoo{
+            applicationId "com.lin.coolweather.qihoo"
+        }
+        baidu{
+            applicationId "com.lin.coolweather.baidu"
+        }
     }
     buildTypes {
         release {
@@ -29,4 +38,5 @@ dependencies {
     compile 'org.litepal.android:core:1.6.1'
     compile 'com.squareup.okhttp3:okhttp:3.11.0'
     compile 'com.google.code.gson:gson:2.8.0'
+    compile 'com.android.support:design:27.1.1'
 }

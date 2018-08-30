@@ -2,12 +2,16 @@ package com.lin.coolweather;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -28,7 +32,7 @@ import com.lin.coolweather.util.Utility;
 
 public class WeatherActivity extends BaseActivity{
 
-    private ScrollView svWeatherLayout;
+    private NestedScrollView svWeatherLayout;
     private TextView tvTitleCity,tvTitleUpdateTime,tvDegree,tvWeatherInfo;
     private LinearLayout forecastLayout;
     private TextView tvAqi,tvPm25,tvComfort,tvCarWash,tvSport;
@@ -73,6 +77,9 @@ public class WeatherActivity extends BaseActivity{
      * 初始化控件
      */
     private void initView() {
+        Toolbar toolbar = findViewById(R.id.weather_tool_bar);
+       // CollapsingToolbarLayout collapsingToolbarLayout = findViewById(R.id.weather_coolapsing_bar);
+        setSupportActionBar(toolbar);
         svWeatherLayout = findViewById(R.id.sv_weather_layout);
         tvTitleCity =findViewById(R.id.title_city);
         tvTitleUpdateTime = findViewById(R.id.title_update_time);

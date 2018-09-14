@@ -2,6 +2,7 @@ package com.lin.coolweather;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.drawable.ColorDrawable;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
@@ -12,11 +13,15 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupMenu;
+import android.widget.PopupWindow;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -29,6 +34,12 @@ import com.lin.coolweather.util.HttpUtil;
 import com.lin.coolweather.util.PreferenceUtil;
 import com.lin.coolweather.util.ToastUtil;
 import com.lin.coolweather.util.Utility;
+import com.zaaach.toprightmenu.MenuItem;
+import com.zaaach.toprightmenu.TopRightMenu;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class WeatherActivity extends BaseActivity{
 
@@ -36,11 +47,13 @@ public class WeatherActivity extends BaseActivity{
     private TextView tvTitleCity,tvTitleUpdateTime,tvDegree,tvWeatherInfo;
     private LinearLayout forecastLayout;
     private TextView tvAqi,tvPm25,tvComfort,tvCarWash,tvSport;
-    private ImageView ivWeatherBg;
-    public SwipeRefreshLayout srLayout;
+    private TextView tvWeatherMinMax,titleMore;
+    private ImageView ivWeatherBg,ivWeatherPng;
     private String mWeatherId;
     public DrawerLayout weatherDrawerLayout;
     public Button btNav;
+    private ImageView ivWeatherRefresh;
+    private    TopRightMenu topRightMenu;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,20 +78,12 @@ public class WeatherActivity extends BaseActivity{
         }else{
             loadBingPic();
         }
-        srLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                requestWeather(mWeatherId);
-            }
-        });
-
     }
     /**
      * 初始化控件
      */
     private void initView() {
         Toolbar toolbar = findViewById(R.id.weather_tool_bar);
-       // CollapsingToolbarLayout collapsingToolbarLayout = findViewById(R.id.weather_coolapsing_bar);
         setSupportActionBar(toolbar);
         svWeatherLayout = findViewById(R.id.sv_weather_layout);
         tvTitleCity =findViewById(R.id.title_city);
@@ -92,8 +97,6 @@ public class WeatherActivity extends BaseActivity{
         tvCarWash = findViewById(R.id.tv_car_wash);
         tvSport = findViewById(R.id.tv_sport);
         ivWeatherBg = findViewById(R.id.iv_weather_bg);
-        srLayout = findViewById(R.id.sr_weather_layout);
-        srLayout.setColorSchemeResources(R.color.colorPrimary);
         weatherDrawerLayout = findViewById(R.id.weather_drawer_layout);
         btNav = findViewById(R.id.bt_nav);
         btNav.setOnClickListener(new View.OnClickListener() {
@@ -102,6 +105,42 @@ public class WeatherActivity extends BaseActivity{
                 weatherDrawerLayout.openDrawer(GravityCompat.START);
             }
         });
+        ivWeatherPng = findViewById(R.id.iv_weather_png);
+        tvWeatherMinMax = findViewById(R.id.tv_weather_min_max);
+        ivWeatherRefresh = findViewById(R.id.iv_weather_refresh);
+        ivWeatherRefresh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                requestWeather(mWeatherId);
+            }
+        });
+        titleMore = findViewById(R.id.title_more);
+        titleMore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+               PopupMenu popupMenu = new PopupMenu(WeatherActivity.this,v, Gravity.CENTER);
+               popupMenu.getMenuInflater().inflate(R.menu.title_menu,popupMenu.getMenu());
+               popupMenu.show();
+               popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                   @Override
+                   public boolean onMenuItemClick(android.view.MenuItem item) {
+                       switch (item.getItemId()){
+                           case R.id.title_add_city:
+                               Intent intent = new Intent(WeatherActivity.this,AddCityActivity.class);
+                               startActivityForResult(intent,1);
+                               break;
+                           case R.id.title_city:
+                               break;
+                           case R.id.title_setting:
+                               break;
+                               default:
+                       }
+                       return false;
+                   }
+               });
+            }
+        });
+
     }
     /**
      * 获取天气页面的背景图片
@@ -134,6 +173,7 @@ public class WeatherActivity extends BaseActivity{
      * @param weatherId
      */
     public void requestWeather(final String weatherId) {
+        ivWeatherRefresh.startAnimation(AnimationUtils.loadAnimation(this,R.anim.bt_refresh_roate));
         String weatherUrl = "http://guolin.tech/api/weather?cityid="+
                 weatherId+"&key=880167c3e1c04cf3ba44bdc6059c9497";
         HttpUtil httpUtil = new HttpUtil(new HttpUtil.ResponseListener() {
@@ -150,7 +190,8 @@ public class WeatherActivity extends BaseActivity{
                         }else{
                             ToastUtil.toast(WeatherActivity.this,"获取天气数据失败");
                         }
-                        srLayout.setRefreshing(false);
+                        //srLayout.setRefreshing(false);
+                        ivWeatherRefresh.clearAnimation();
                     }
                 });
             }
@@ -161,7 +202,8 @@ public class WeatherActivity extends BaseActivity{
                     @Override
                     public void run() {
                         ToastUtil.toast(WeatherActivity.this,"获取天气数据失败");
-                        srLayout.setRefreshing(false);
+                        //srLayout.setRefreshing(false);
+                        ivWeatherRefresh.clearAnimation();
                     }
                 });
             }
@@ -175,13 +217,17 @@ public class WeatherActivity extends BaseActivity{
      */
     private void showWeatherInfo(Weather weather) {
         String cityName = weather.basic.cityName;
-        String updateTime = weather.basic.update.updateTime.split(" ")[1];
+       // String updateTime = weather.basic.update.updateTime.split(" ")[1];
+        String updateTime = weather.basic.update.updateTime.replaceAll("-","/");
         String degree = weather.now.temperature+"℃";
         String weatherInfo = weather.now.more.info;
+        String weatherPngCode = weather.now.more.code;
         tvTitleCity.setText(cityName);
         tvTitleUpdateTime.setText(updateTime);
         tvDegree.setText(degree);
         tvWeatherInfo.setText(weatherInfo);
+        tvWeatherMinMax.setText(weather.now.getWind());
+        Glide.with(this).load("file:///android_asset/"+weatherPngCode+".png").into(ivWeatherPng);
         forecastLayout.removeAllViews();
         for(Forecast forecast:weather.forecastList){
             View view = LayoutInflater.from(this).inflate(R.layout.forecast_item,forecastLayout,false);
@@ -210,4 +256,17 @@ public class WeatherActivity extends BaseActivity{
         startService(intent);
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode){
+            case 1:
+                if(resultCode==RESULT_OK){
+                    String weatherId = data.getStringExtra("weather_id");
+                    requestWeather(weatherId);
+                }
+                break;
+                default:
+        }
+    }
 }

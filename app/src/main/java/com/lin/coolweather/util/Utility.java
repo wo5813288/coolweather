@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 import com.lin.coolweather.db.City;
 import com.lin.coolweather.db.County;
 import com.lin.coolweather.db.Province;
+import com.lin.coolweather.gson.HotCity;
 import com.lin.coolweather.gson.Weather;
 
 import org.json.JSONArray;
@@ -102,6 +103,19 @@ public class Utility {
             Gson gson = new Gson();
             Weather weather = gson.fromJson(weatherContent, Weather.class);
             return weather;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    public static HotCity handleHotCityResponse(String response){
+        try {
+            JSONObject jsonObject = new JSONObject(response);
+            JSONArray jsonArray = jsonObject.getJSONArray("HeWeather6");
+            String weatherContent = jsonArray.getJSONObject(0).toString();
+            Gson gson = new Gson();
+            HotCity hotCity = gson.fromJson(weatherContent, HotCity.class);
+            return hotCity;
         } catch (JSONException e) {
             e.printStackTrace();
         }

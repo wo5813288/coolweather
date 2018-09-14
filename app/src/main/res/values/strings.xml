@@ -4,7 +4,12 @@
     <string name="weather_quity_text">空气质量</string>
     <string name="aqi_point">AQI指数</string>
     <string name="pm25_point">pm2.5指数</string>
-    
+    <string name="click_to_skip">点击跳过</string>
     //Suggestion
     <string name="life_suggestion_text">生活建议</string>
+
+    //title
+    <string name="title_city">城市</string>
+    <string name="add_city">添加</string>
+    <string name="title_more">更多</string>
 </resources>

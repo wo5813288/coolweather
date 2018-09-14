@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 public class PreferenceUtil {
     public static final String WEATHER_KEY = "weather";
     private static final String SHARED_NAME ="m_sharedPreference";
+    public static final String HOT_CITY_KEY = "hot_city";
     public static void setSharedPreferenceString(Context context,String key,String content){
         SharedPreferences sharedPreferences = context.getSharedPreferences(SHARED_NAME,Context.MODE_PRIVATE);
         sharedPreferences.edit().putString(key,content).apply();

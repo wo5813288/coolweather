@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="100dp"
+    android:orientation="horizontal">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginLeft="15dp"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="1">
+
+        <TextView
+            android:id="@+id/user_city_item_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="浦东新区"
+            android:textSize="25sp"/>
+        <TextView
+            android:id="@+id/user_city_item_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="9月17日，15:44"/>
+    </LinearLayout>
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+
+        <ImageView
+            android:id="@+id/user_city_item_bg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/city_list_ll"
+            android:src="@mipmap/ic_logo" />
+        <LinearLayout
+            android:id="@+id/city_list_ll"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="15dp"
+            android:layout_marginLeft="10dp"
+            android:layout_centerVertical="true"
+            android:gravity="center"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/user_city_item_tmp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="26度"
+                android:textSize="25sp"/>
+            <TextView
+                android:id="@+id/user_city_item_min_max"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="24/26"
+                android:textSize="15sp"/>
+        </LinearLayout>
+
+
+    </RelativeLayout>
+</LinearLayout>

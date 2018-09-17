@@ -26,6 +26,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.lin.coolweather.db.UserCity;
 import com.lin.coolweather.fragment.ChooseAreaFragment;
 import com.lin.coolweather.gson.Forecast;
 import com.lin.coolweather.gson.Weather;
@@ -42,7 +43,15 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class WeatherActivity extends BaseActivity{
-
+    /**
+     * 添加城市
+     */
+    public static final int ADD_REQUEST_CODE = 1;
+    /**
+     * 用户保存的城市列表
+     */
+    public static final int CITY_LIST_REQUEST_CODE = 2;
+    public static final String FOR_RESULT_KEY = "weather_id";
     private NestedScrollView svWeatherLayout;
     private TextView tvTitleCity,tvTitleUpdateTime,tvDegree,tvWeatherInfo;
     private LinearLayout forecastLayout;
@@ -53,7 +62,7 @@ public class WeatherActivity extends BaseActivity{
     public DrawerLayout weatherDrawerLayout;
     public Button btNav;
     private ImageView ivWeatherRefresh;
-    private    TopRightMenu topRightMenu;
+    private boolean isAddCity = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -127,9 +136,11 @@ public class WeatherActivity extends BaseActivity{
                        switch (item.getItemId()){
                            case R.id.title_add_city:
                                Intent intent = new Intent(WeatherActivity.this,AddCityActivity.class);
-                               startActivityForResult(intent,1);
+                               startActivityForResult(intent,ADD_REQUEST_CODE);
                                break;
                            case R.id.title_city:
+                               Intent citList =new Intent(WeatherActivity.this,CityListActivity.class);
+                               startActivityForResult(citList,CITY_LIST_REQUEST_CODE);
                                break;
                            case R.id.title_setting:
                                break;
@@ -186,11 +197,14 @@ public class WeatherActivity extends BaseActivity{
                         if(weather!=null&&weather.status.equalsIgnoreCase("ok")){
                             PreferenceUtil.setSharedPreferenceString(WeatherActivity.this,"weather",response);
                             mWeatherId = weather.basic.weatherId;
+                            if(isAddCity){
+                                //保存用户的城市信息
+                                saveMyCity(weatherId,response);
+                            }
                             showWeatherInfo(weather);
                         }else{
                             ToastUtil.toast(WeatherActivity.this,"获取天气数据失败");
                         }
-                        //srLayout.setRefreshing(false);
                         ivWeatherRefresh.clearAnimation();
                     }
                 });
@@ -260,13 +274,30 @@ public class WeatherActivity extends BaseActivity{
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode){
-            case 1:
+            case ADD_REQUEST_CODE:
                 if(resultCode==RESULT_OK){
-                    String weatherId = data.getStringExtra("weather_id");
+                    isAddCity = true;
+                    String weatherId = data.getStringExtra(FOR_RESULT_KEY);
                     requestWeather(weatherId);
                 }
                 break;
+            case CITY_LIST_REQUEST_CODE:
+                if(resultCode==RESULT_OK){
+                    String weatherId = data.getStringExtra(FOR_RESULT_KEY);
+                    requestWeather(weatherId);
+                }
                 default:
         }
+    }
+
+    /**
+     * 保存用户自己的城市
+     */
+    private void saveMyCity(String cityCN,String content){
+        UserCity userCity = new UserCity();
+        userCity.setCityId(cityCN);
+        userCity.setWeatherContent(content);
+        userCity.save();
+        isAddCity = false;
     }
 }

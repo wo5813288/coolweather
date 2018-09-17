@@ -29,7 +29,7 @@
                 android:resource="@xml/gdt_file_path" />
         </provider>
 
-        <activity android:name=".MainActivity"></activity>
+        <activity android:name=".MainActivity" />
         <activity
             android:name=".WeatherActivity"
             android:theme="@style/WeatherActivityTheme" />
@@ -56,7 +56,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".AddCityActivity"></activity>
+        <activity android:name=".AddCityActivity" />
+        <activity android:name=".CityListActivity"></activity>
     </application>
 
 </manifest>

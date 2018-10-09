@@ -15,6 +15,7 @@ import com.google.gson.Gson;
 import com.lin.coolweather.adapter.HotCityAdapter;
 import com.lin.coolweather.gson.HotCity;
 import com.lin.coolweather.gson.HotCityBasic;
+import com.lin.coolweather.util.GridSpacingItemDecoration;
 import com.lin.coolweather.util.HttpUtil;
 import com.lin.coolweather.util.PreferenceUtil;
 import com.lin.coolweather.util.Utility;
@@ -72,6 +73,8 @@ public class AddCityActivity extends BaseActivity implements View.OnClickListene
                         if(hotCity!=null&&hotCity.status.equals("ok")){
                             PreferenceUtil.setSharedPreferenceString(AddCityActivity.this,PreferenceUtil.HOT_CITY_KEY,response);
                             hotCityBasics.addAll(hotCity.hotCityBasics);
+                            //刷新列表
+                            adapter.notifyDataSetChanged();
                         }
                     }
                 });
@@ -133,6 +136,7 @@ public class AddCityActivity extends BaseActivity implements View.OnClickListene
         addCitySearch.setOnClickListener(this);
         addCityRecyclerView = findViewById(R.id.add_city_recycler_view);
         GridLayoutManager layoutManager = new GridLayoutManager(this,4);
+        addCityRecyclerView.addItemDecoration(new GridSpacingItemDecoration(4,8,true));
         addCityRecyclerView.setLayoutManager(layoutManager);
         etAddCity = findViewById(R.id.et_add_city);
     }

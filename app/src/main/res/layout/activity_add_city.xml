@@ -30,15 +30,15 @@
         <RelativeLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="4">
+            android:layout_weight="4"
+            android:paddingVertical="@dimen/x10">
             <EditText
                 android:id="@+id/et_add_city"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_margin="10dp"
                 android:background="@drawable/et_text_bg"
                 android:hint="请输入城市名称"
-                android:padding="5dp"/>
+                android:paddingLeft="@dimen/x5"/>
         </RelativeLayout>
         <RelativeLayout
             android:layout_width="0dp"

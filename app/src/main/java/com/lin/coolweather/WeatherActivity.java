@@ -25,6 +25,10 @@ import android.widget.PopupWindow;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.baidu.location.BDAbstractLocationListener;
+import com.baidu.location.BDLocation;
+import com.baidu.location.BDLocationListener;
+import com.baidu.location.LocationClient;
 import com.bumptech.glide.Glide;
 import com.lin.coolweather.db.UserCity;
 import com.lin.coolweather.fragment.ChooseAreaFragment;
@@ -32,11 +36,16 @@ import com.lin.coolweather.gson.Forecast;
 import com.lin.coolweather.gson.Weather;
 import com.lin.coolweather.service.AutoUpdateService;
 import com.lin.coolweather.util.HttpUtil;
+import com.lin.coolweather.util.LocationUtil;
 import com.lin.coolweather.util.PreferenceUtil;
 import com.lin.coolweather.util.ToastUtil;
 import com.lin.coolweather.util.Utility;
 import com.zaaach.toprightmenu.MenuItem;
 import com.zaaach.toprightmenu.TopRightMenu;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -63,6 +72,8 @@ public class WeatherActivity extends BaseActivity{
     public Button btNav;
     private ImageView ivWeatherRefresh;
     private boolean isAddCity = false;
+    private MyLocationListener myListener = new MyLocationListener();
+    private  LocationUtil locationUtil;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -111,8 +122,12 @@ public class WeatherActivity extends BaseActivity{
         btNav.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                weatherDrawerLayout.openDrawer(GravityCompat.START);
+                 locationUtil = new LocationUtil(getApplicationContext());
+                locationUtil.showProgressDialog(WeatherActivity.this);
+               // weatherDrawerLayout.openDrawer(GravityCompat.START);
+                locationUtil.startLocatin(myListener);
             }
+
         });
         ivWeatherPng = findViewById(R.id.iv_weather_png);
         tvWeatherMinMax = findViewById(R.id.tv_weather_min_max);
@@ -299,5 +314,44 @@ public class WeatherActivity extends BaseActivity{
         userCity.setWeatherContent(content);
         userCity.save();
         isAddCity = false;
+    }
+    private void getWeatherCityId(final String cityId){
+        HttpUtil httpUtil = new HttpUtil(new HttpUtil.ResponseListener() {
+            @Override
+            public void onSuccess(final String response) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            locationUtil.closeProgressDialog();
+                            JSONObject jsonObject = new JSONObject(response);
+                            JSONArray jsonArray = jsonObject.getJSONArray("HeWeather6");
+                            String status = jsonArray.getJSONObject(0).getString("status");
+                            if(status.equals("ok")){
+                                JSONArray jsonArray1 = jsonArray.getJSONObject(0).getJSONArray("basic");
+                                String cid = jsonArray1.getJSONObject(0).getString("cid");
+                                requestWeather(cid);
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+            }
+
+            @Override
+            public void onFail() {
+
+            }
+        });
+        httpUtil.sendOKhttpRequest("https://search.heweather.com/find?location="+cityId+"&key=880167c3e1c04cf3ba44bdc6059c9497&");
+    }
+    class MyLocationListener extends BDAbstractLocationListener{
+
+        @Override
+        public void onReceiveLocation(BDLocation bdLocation) {
+            String city = bdLocation.getCity();    //获取城市
+            getWeatherCityId(city);
+        }
     }
 }

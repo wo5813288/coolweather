@@ -53,7 +53,7 @@ public class SplashActivity extends BaseActivity {
         setContentView(R.layout.activity_splash);
         container = findViewById(R.id.container);
         ivSpalshImage = findViewById(R.id.iv_splash_image);
-        Glide.with(this).load(R.mipmap.splash_holder).into(ivSpalshImage);
+        Glide.with(this).load(R.mipmap.weather_splash).into(ivSpalshImage);
         skipView = findViewById(R.id.skip_view);
         if(Build.VERSION.SDK_INT>=23){
             checkAndRequestPermission();

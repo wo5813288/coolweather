@@ -1,17 +1,9 @@
 package com.lin.coolweather;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.graphics.drawable.ColorDrawable;
-import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.view.GravityCompat;
+import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.NestedScrollView;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -21,17 +13,12 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
-import android.widget.PopupWindow;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.baidu.location.BDAbstractLocationListener;
 import com.baidu.location.BDLocation;
-import com.baidu.location.BDLocationListener;
-import com.baidu.location.LocationClient;
 import com.bumptech.glide.Glide;
 import com.lin.coolweather.db.UserCity;
-import com.lin.coolweather.fragment.ChooseAreaFragment;
 import com.lin.coolweather.gson.Forecast;
 import com.lin.coolweather.gson.Weather;
 import com.lin.coolweather.service.AutoUpdateService;
@@ -40,16 +27,10 @@ import com.lin.coolweather.util.LocationUtil;
 import com.lin.coolweather.util.PreferenceUtil;
 import com.lin.coolweather.util.ToastUtil;
 import com.lin.coolweather.util.Utility;
-import com.zaaach.toprightmenu.MenuItem;
-import com.zaaach.toprightmenu.TopRightMenu;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 public class WeatherActivity extends BaseActivity{
     /**
@@ -158,6 +139,8 @@ public class WeatherActivity extends BaseActivity{
                                startActivityForResult(citList,CITY_LIST_REQUEST_CODE);
                                break;
                            case R.id.title_setting:
+                               Intent setIntent = new Intent(WeatherActivity.this,SettingActivity.class);
+                               startActivity(setIntent);
                                break;
                                default:
                        }
